@@ -1,8 +1,7 @@
-package com.infracloud.interview.URLShortener.api;
+package com.infracloud.interview.URLShortener.api.V2;
 
 import com.infracloud.interview.URLShortener.model.Url;
-import com.infracloud.interview.URLShortener.service.RedirectService;
-import com.infracloud.interview.URLShortener.service.UrlShortenerService;
+import com.infracloud.interview.URLShortener.service.RedisURLRedirectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,20 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/V1")
-public class RedirectAPI {
-
+@RequestMapping("V2")
+public class RedirectApi {
     @Autowired
-    RedirectService redirectService;
+    RedisURLRedirectService redisURLRedirectService;
 
     @GetMapping("/redirect")
     public ResponseEntity<Url> getRedirectedUrl(@RequestBody Url shortUrl){
         try {
-            Optional<Url> url = redirectService.redirectUrl(shortUrl);
-            if(url.get() != null && !url.get().getUrl().contains("Not Mapped")) {
-                return new ResponseEntity(url.get(), HttpStatus.OK);
+            Url url = redisURLRedirectService.redirectUrl(shortUrl, true);
+            if(url != null && !url.getUrl().contains("Not Mapped")) {
+                return new ResponseEntity(url, HttpStatus.OK);
             }else{
-                return new ResponseEntity<>(url.get(), HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(url, HttpStatus.NOT_FOUND);
             }
         }catch (Exception e){
             e.printStackTrace();

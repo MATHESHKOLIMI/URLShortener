@@ -12,7 +12,7 @@ public class Domain {
     }
 
     public List<String> domainList(){
-        List<String> domainList = Arrays.asList("http://shorl.sm/","http://tin.mk/" );
+        List<String> domainList = Arrays.asList("http://shorl.sm/");
         return domainList;
     }
 

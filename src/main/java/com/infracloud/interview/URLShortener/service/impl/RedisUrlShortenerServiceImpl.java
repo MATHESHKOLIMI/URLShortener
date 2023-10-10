@@ -7,8 +7,10 @@ import com.infracloud.interview.URLShortener.service.RedisUrlShortenerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class RedisUrlShortenerServiceImpl implements RedisUrlShortenerService {
@@ -35,7 +37,8 @@ public class RedisUrlShortenerServiceImpl implements RedisUrlShortenerService {
 
     @Override
     public Map<String, Integer> getDomainMetrics(){
-        return urlRepositoryDB.getDomainMetrics();
+        Map<String, Integer> domainMap = urlRepositoryDB.getDomainMetrics();
+        return domainMap.keySet().stream().sorted(Comparator.comparing(key -> domainMap.get(key)).reversed()).limit(3).collect(Collectors.toMap(key -> key, key -> domainMap.get(key)));
     }
 
     public String getDomain(Url url){
